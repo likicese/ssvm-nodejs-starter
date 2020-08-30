@@ -1,105 +1,93 @@
-# Getting started
+# 云洞
 
-![Build and test](https://github.com/second-state/ssvm-nodejs-starter/workflows/Build%20and%20test/badge.svg)
+![](./docs/img/README.png)
 
-[Fork this project](https://github.com/second-state/ssvm-nodejs-starter/fork) to create your own Rust functions in Node.js. [Learn more](https://www.secondstate.io/articles/getting-started-rust-nodejs-vscode/)
+## 前言
 
-* The Rust functions are in the `src` directory. You can put high performance workload into Rust functions.
-* The JavaScript functions are in the `node` directory and they can access the Rust functions.
-* Use the `node node/app.js` command to run the application in Node.js.
+本项目fork自：https://github.com/second-state/ssvm-nodejs-starter
 
+看好rust！！！项目组加油
 
-## Use Docker to build and run
+## 做了什么？
+
+类似树洞，取名云洞。
+
+其实就是个简陋的留言板。
+
+任何人都能在上边留言，都能看到他人的留言，也都能看到他人的留言。
+
+留言日清，昨日不可见，恍若云朵，飘然而去，不留痕迹。
+
+## 用了什么？
+
+语言类：rust、js、html、css
+
+环境：docker、centos、vscode
+
+为了获取时间而引入模块：chrono
+
+## 怎么做的？
+
+从rust开始。
+
+写了两个函数。
+
+一个读取文件，将文件内容传出。
+
+另一个写文件和创建文件，添加今日留言并且把文件内容传出。
+
+js负责接值、解值和展示数据。
+
+## 最难的是什么？
+
+首先是环境。
+
+由于网络环境不好，包的下载一直是个大难题。甚至docker都很难下载。
+
+期间经历了docker到ubuntu再到docker的心酸变化。
+
+其次是rust的语法。
+
+rust和其他语言太不一样。够简洁，也够晦涩，需要消耗专门的心力去学习语法糖，才能使用这门语言。
+
+## 收获？
+
+首先是rust的知识。这是一种迥然不同的语言。
+
+其次是js的强化。以及如何在各种各样稀奇古怪的环境中安装自己想要的软件。甚至我还装了两次ubuntu，均以环境搭建失败告终。根据错误报告，感觉和文件权限有关系。
+
+最后是对wasm和ssvm的了解。稍微看了下它的代码，前端大杀器！期待它在web中的精彩表现。
+
+## 如何运行本项目？
+
+感觉官方教程来即可，推荐docker！
 
 ```
 $ docker pull secondstate/ssvm-nodejs-starter:v1
-$ docker run -p 3000:3000 --rm -it -v $(pwd):/app secondstate/ssvm-nodejs-starter:v1
+$ docker run -p 3006:3006 --rm -it -v $(pwd):/app secondstate/ssvm-nodejs-starter:v1
 (docker) # cd /app
 (docker) # ssvmup build
-(docker) # node node/app.js
+(docker) # node node/server.js
 ```
 
-From a second terminal window, you can test the local server.
+浏览器打开：http://localhost:3006
 
-```
-$ curl http://localhost:3000/?name=SSVM
-hello SSVM
-```
+## 排坑
 
+### 1. 卡在ssvmup build
 
-## Use VSCode Codespace
+这个命令会做两件事。rust编译和js关联包的构建。
 
-<p>
-    <a href="https://online.visualstudio.com/environments/new?name=Rust%20and%20WebAssembly%20in%20Node.js&repo=second-state/ssvm-nodejs-starter">
-        <img src="https://img.shields.io/endpoint?style=social&url=https%3A%2F%2Faka.ms%2Fvso-badge">
-    </a>
-</p>
+得先看看卡在哪一步。
 
-![SSVM](https://github.com/second-state/blog/blob/master/static/images/SSVM-edited-without-music.gif?raw=true)
+首先，在项目目录下，执行`cargo update`。如果index更新很慢，说明卡在rust源下载。建议换源。编辑/usr/local/cargo/config文件，根据自身情况换合适的源。
 
-This project template works with the VS Codespaces online IDE! Code, build, and run directly from inside the browser. No software download or install needed! Check out the [high-res screencast](https://youtu.be/j85cbNsciOs).
+假如更新成功，说明卡在js关联包的构建。请去手动下载 [wasm-bindgen](https://github.com/second-state/wasm-bindgen/releases/download/0.2.61%2Bssvm.15/wasm-bindgen-0.2.61+ssvm.15-x86_64-unknown-linux-gnu.tar.gz) 和 [binary](https://github.com/WebAssembly/binaryen/releases/download/version_91/binaryen-version_91-x86_64-linux.tar.gz)，并且把解压后的执行文件移入`/usr/local/bin`目录下。
 
-> VS Codespaces runs entirely in your browser and costs around $1 per work day. It is cheaper than a cup of coffee in the office. Alternatively, use locally installed VSCode and Docker, and [launch the IDE with your remote git repository](https://code.visualstudio.com/remote-tutorials/containers/getting-started).
+### 2. docker镜像拉不下来
 
-1 First, open the [VS Codespaces](https://online.visualstudio.com/) web site and login with your Azure account. You can get a [free Azure account](https://azure.microsoft.com/en-us/free/).
+换源、指定源地址下载。
 
-2 Next, create a new Codespace. Put your forked repository into the Git Repository field.
+### 3. 自己安装环境
 
-![Create a new Codespace](docs/img/vscode_create.png)
-
-3 Then open the `src/lib.rs`, `node/app.js` and `Cargo.toml` files and see how the Node.js express app calls the Rust function to say hello.
-
-![Code in Codespace](docs/img/vscode_code.png)
-
-4 Click on the Run button on the left panel, and then the Launch Program at the top to build and run the application.
-
-![Build and run](docs/img/vscode_run.png)
-
-The Terminal window at the bottom shows the build progress. It builds the Rust program, and then launches the Node.js app.
-
-![Build](docs/img/vscode_build.png)
-
-The Debug window shows the Node.js server running and waiting for web requests.
-
-![Debug](docs/img/vscode_debug.png)
-
-5 Now, you have two choices. You could use the proxy link for `127.0.0.1:3000` to access the running server in a browser.
-
-![Browser link](docs/img/vscode_port.png)
-
-Or, you could open another terminal window in the IDE via the `Terminal -> New Terminal` menu.
-
-![Open Terminal](docs/img/vscode_terminal.png)
-
-From the terminal window, you can test the local server.
-
-```
-$ curl http://127.0.0.1:3000/?name=SSVM
-hello SSVM
-```
-
-### More exercises
-
-Now, you can copy and paste code from [this project](https://github.com/second-state/wasm-learning/tree/master/nodejs/functions).
-
-* `src/lib.rs` --> Replace with [code here](https://github.com/second-state/wasm-learning/blob/master/nodejs/functions/src/lib.rs)
-* `Cargo.toml` --> Replace with [code here](https://github.com/second-state/wasm-learning/blob/master/nodejs/functions/Cargo.toml)
-* `node/app.js` --> Replace with [code here](https://github.com/second-state/wasm-learning/blob/master/nodejs/functions/node/app.js)
-
-Click on Run to see the build output in Terminal window, and application console output in Debug window.
-
-Try to log into GitHub from the IDE, and use the IDE's GitHub integration features to commit the changes, push the changes back into your forked repository, and perhaps even send us a Pull Request from the IDE!
-
-## Read more:
-
-* [The Case for WebAssembly on the Server-side](https://www.secondstate.io/articles/why-webassembly-server/)
-* [Guide on how to Rust and WebAssembly for server-side apps](https://www.secondstate.io/articles/getting-started-with-rust-function/)
-
-## Resources
-
-* [The Second State VM (SSVM)](https://github.com/second-state/ssvm) is a high performance [WebAssembly virtual machine](https://www.secondstate.io/ssvm/) designed for server-side applications.
-* [The SSVM NPM addon](https://github.com/second-state/ssvm-napi) provides access to the SSVM, and programs in it, through a Node.js host application.
-* [The SSVM ready tool, ssvmup](https://github.com/second-state/ssvmup) is a [toolchain](https://www.secondstate.io/articles/ssvmup/) for compiling Rust programs into WebAssembly, and then make them accessible from JavaScripts via the SSVM.
-
-Brought to you by the Open source dev team at [Second State](https://www.secondstate.io/). Follow us on [Twitter](https://twitter.com/secondstateinc), [Facebook](https://www.facebook.com/SecondState.io/), [LinkedIn](https://www.linkedin.com/company/second-state/), [YouTube](https://www.youtube.com/channel/UCePMT5duHcIbJlwJRSOPDMQ), or [Medium](https://medium.com/wasm)
-
+推荐ubuntu20。其他linux的动态库太老，容易报错。
